@@ -76,9 +76,6 @@ function App() {
             </Button>
           </div>
         </Grid>
-        {/* <Grid item xs={6} >
-          Robot component here
-        </Grid> */}
         <Grid item xs={6} style={{ height: '60rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <RobotComponent />
         </Grid>

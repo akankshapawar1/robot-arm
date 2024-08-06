@@ -14,17 +14,15 @@ function RevolutJoint({ position, rotation }) {
 }
 
 function Link({ position, dimensions, color }) {
-  const [width, height, depth] = dimensions; // Destructure dimensions to get width, height, and depth
-  const cylinderPosition = [0, height / 2, 0]; // Position the cylinder on top of the box
+  const [width, height, depth] = dimensions; 
+  const cylinderPosition = [0, height / 2, 0]; 
 
   return (
     <group position={position}>
-      {/* Box part of the link */}
       <mesh>
         <boxGeometry args={dimensions} />
         <meshLambertMaterial color={color} transparent opacity={1} />
       </mesh>
-      {/* Horizontal cylinder on top of the box */}
       <mesh position={cylinderPosition} rotation={[0, 0, Math.PI / 2]}>
         <cylinderGeometry args={[width / 2, width / 2, width, 32]} />
         <meshLambertMaterial color={color} transparent opacity={1} />
@@ -39,7 +37,6 @@ function Manipulator({ angles, colors }) {
   useFrame(() => {
       linkRefs.current.forEach((ref, index) => {
           if (ref.current) {
-              // Apply rotation only to links based on the angles
               ref.current.rotation.z = angles[index] * (Math.PI / 180);
           }
       });
@@ -56,9 +53,9 @@ function Manipulator({ angles, colors }) {
 function Chain({ angles, refs, index, colors }) {
   if (index >= angles.length) return null;
 
-  const boxHeight = 40; // Height of each link
+  const boxHeight = 40; 
   const position = [0, boxHeight * index, 0]; 
-  const color = colors[index]; // Get the color for the current link
+  const color = colors[index]; 
 
   return (
       <group ref={refs[index]} position={position} rotation={[0, 0, angles[index] * (Math.PI / 180)]}>
