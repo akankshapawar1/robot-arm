@@ -14,26 +14,26 @@ function RevolutJoint({ position, rotation }) {
 }
 
 function Link({ position, dimensions, color }) {
-  const [radius, _, height] = dimensions; // Destructure dimensions to get radius and height
-  const hemispherePosition = [0, height / 2, 0]; // Position the hemisphere at the top of the cylinder
+  const [width, height, depth] = dimensions; // Destructure dimensions to get width, height, and depth
+  const cylinderPosition = [0, height / 2, 0]; // Position the cylinder on top of the box
 
   return (
     <group position={position}>
-      {/* Cylinder part of the link */}
+      {/* Box part of the link */}
       <mesh>
-        <cylinderGeometry args={dimensions} />
+        <boxGeometry args={dimensions} />
         <meshLambertMaterial color={color} transparent opacity={1} />
       </mesh>
-      {/* Hemisphere part of the link */}
-      <mesh position={hemispherePosition}>
-        <sphereGeometry args={[radius, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      {/* Horizontal cylinder on top of the box */}
+      <mesh position={cylinderPosition} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[width / 2, width / 2, width, 32]} />
         <meshLambertMaterial color={color} transparent opacity={1} />
       </mesh>
     </group>
   );
 }
 
-function Manipulator({ angles }) {
+function Manipulator({ angles, colors }) {
   const linkRefs = useRef(angles.map(() => React.createRef()));
 
   useFrame(() => {
@@ -47,19 +47,23 @@ function Manipulator({ angles }) {
 
   return (
       <>
-        <RevolutJoint position={[0, 0, 0]} rotation={[0, 0, 0]} />  
-        <Chain angles={angles} refs={linkRefs.current} index={0} />
+        <RevolutJoint position={[0, 0, 0]} rotation={[0, 0, 0]} />
+        <Chain angles={angles} refs={linkRefs.current} index={0} colors={colors} />
       </>
   );
 }
 
-function Chain({ angles, refs, index }) {
+function Chain({ angles, refs, index, colors }) {
   if (index >= angles.length) return null;
-  const position = [0, 40 * index, 0];  // Adjust position to stack links correctly
+
+  const boxHeight = 40; // Height of each link
+  const position = [0, boxHeight * index, 0]; 
+  const color = colors[index]; // Get the color for the current link
+
   return (
       <group ref={refs[index]} position={position} rotation={[0, 0, angles[index] * (Math.PI / 180)]}>
-        <Link dimensions={[5, 5, 40]} color={0xe69138} position={[0, 20, 0]} />
-        <Chain angles={angles} refs={refs} index={index + 1} />
+          <Link dimensions={[10, boxHeight, 10]} color={color} position={[0, boxHeight / 2, 0]} />
+          <Chain angles={angles} refs={refs} index={index + 1} colors={colors} />
       </group>
   );
 }
@@ -78,11 +82,12 @@ function GridHelper() {
 
 export default function RobotComponent() {
   const [angles, setAngles] = useState([0, 0]);  
+  const colors = ['#cc0000', '#fba54a'];
 
-  const increaseAngle1 = () => setAngles((prev) => [Math.min(prev[0] + 1, 90), prev[1]]);
-  const decreaseAngle1 = () => setAngles((prev) => [Math.max(prev[0] - 1, -90), prev[1]]);
-  const increaseAngle2 = () => setAngles((prev) => [prev[0], Math.min(prev[1] + 1, 90)]);
-  const decreaseAngle2 = () => setAngles((prev) => [prev[0], Math.max(prev[1] - 1, -90)]);
+  const increaseAngle1 = () => setAngles((prev) => [Math.min(prev[0] + 10, 90), prev[1]]);
+  const decreaseAngle1 = () => setAngles((prev) => [Math.max(prev[0] - 10, -90), prev[1]]);
+  const increaseAngle2 = () => setAngles((prev) => [prev[0], Math.min(prev[1] + 10, 90)]);
+  const decreaseAngle2 = () => setAngles((prev) => [prev[0], Math.max(prev[1] - 10, -90)]);
 
   const saveAngles = () => {
     const filename = prompt('Enter the filename to save joint angles:', 'joint_angles.txt');
@@ -115,7 +120,7 @@ export default function RobotComponent() {
         <ambientLight intensity={1}/>
         <OrbitControls/>
         <GridHelper/>
-        <Manipulator angles={angles} />
+        <Manipulator angles={angles}  colors={colors} />
       </Canvas>
     </>
   );
