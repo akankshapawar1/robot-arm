@@ -55,7 +55,7 @@ function Chain({ angles, refs, index, colors }) {
 
   const boxHeight = 40; 
   const position = [0, boxHeight * index, 0]; 
-  const color = colors[index]; 
+  const color = colors[index]; // Get the color for the current link
 
   return (
       <group ref={refs[index]} position={position} rotation={[0, 0, angles[index] * (Math.PI / 180)]}>
