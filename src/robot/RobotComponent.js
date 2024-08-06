@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { saveAs } from 'file-saver'; // Import saveAs from file-saver
+import { saveAs } from 'file-saver'; 
 
 function RevolutJoint({ position, rotation }) {
   return (
@@ -15,13 +15,9 @@ function RevolutJoint({ position, rotation }) {
 
 function Link({ position }) {
   return (
-    // <mesh position={position}>
-    //   <cylinderGeometry args={[5, 5, 100, 32]} />
-    //   <meshLambertMaterial color={0x000000} transparent opacity={1} />
-    // </mesh>
     <mesh position={position}>
       <cylinderGeometry args={[10, 10, 100, 32]} /> 
-      <meshLambertMaterial color={0x00ff00} transparent opacity={1} />
+      <meshLambertMaterial color={0x00ff00} transparent opacity={.5} />
     </mesh>
   );
 }
@@ -44,14 +40,27 @@ function Manipulator({ angles }) {
 function Chain({ angles, refs, index }) {
   if (index >= angles.length) return null; 
   const position = index === 0 ? [0, 0, 0] : [0, 100 * (index), 0];
-  const hasLink = index <= angles.length - 1; // Link should exist if it's not the last joint
+  const hasLink = index <= angles.length - 1; 
 
   return (
     <group ref={refs[index]} position={position} rotation={[0, 0, angles[index] * (Math.PI / 180)]}>
-      <RevolutJoint position={[0, 0, 0]} rotation={[0, 0, 0]} />
-      {hasLink && <Link position={[0, 50, 0]} />}
+      {index === 0 ? (
+        <RevolutJoint position={[0, 0, 0]} rotation={[0, 0, 0]} />
+      ) : (
+        <></>
+      )}
+      {hasLink && <Link position={[0, 40, 0]} />}
       <Chain angles={angles} refs={refs} index={index + 1} /> {/* Recursive call for the next segment */}
     </group>
+  );
+}
+
+function SphereJoint({ position }) {
+  return (
+    <mesh position={position}>
+      <sphereGeometry args={[5, 32, 32]} />  
+      <meshBasicMaterial color={0x00ff00} /> 
+    </mesh>
   );
 }
 
@@ -59,6 +68,7 @@ function GridHelper() {
   const { scene } = useThree();
   useEffect(() => {
     const gridHelper = new THREE.GridHelper(200, 50);
+    gridHelper.position.y = -12;
     scene.add(gridHelper);
     return () => {
       scene.remove(gridHelper);
@@ -68,7 +78,7 @@ function GridHelper() {
 }
 
 export default function RobotComponent() {
-  const [angles, setAngles] = useState([0, 0]);  // Assuming two angles for simplification
+  const [angles, setAngles] = useState([0, 0]);  
 
   const increaseAngle1 = () => setAngles((prev) => [Math.min(prev[0] + 1, 90), prev[1]]);
   const decreaseAngle1 = () => setAngles((prev) => [Math.max(prev[0] - 1, -90), prev[1]]);
