@@ -5,10 +5,8 @@ import * as THREE from 'three';
 import { saveAs } from 'file-saver'; // Import saveAs from file-saver
 
 function RevolutJoint({ position, rotation }) {
-  const mesh = useRef();
-  console.log("RevolutJoint rendering", { position, rotation });
   return (
-    <mesh ref={mesh} position={position} rotation={rotation}>
+    <mesh position={position} rotation={rotation}>
       <cylinderGeometry args={[15, 15, 25, 32]} />
       <meshLambertMaterial color={0xdf1111} />
     </mesh>
@@ -16,46 +14,43 @@ function RevolutJoint({ position, rotation }) {
 }
 
 function Link({ position }) {
-  const mesh = useRef();
-  console.log("Link component rendering at position:", position);
   return (
-    <mesh ref={mesh} position={position}>
-      <cylinderGeometry args={[5, 5, 100, 32]} />
-      <meshLambertMaterial color={0x000000} transparent opacity={1} />
+    // <mesh position={position}>
+    //   <cylinderGeometry args={[5, 5, 100, 32]} />
+    //   <meshLambertMaterial color={0x000000} transparent opacity={1} />
+    // </mesh>
+    <mesh position={position}>
+      <cylinderGeometry args={[10, 10, 100, 32]} /> 
+      <meshLambertMaterial color={0x00ff00} transparent opacity={1} />
     </mesh>
   );
 }
 
 function Manipulator({ angles }) {
-  console.log("Manipulator component rendering");
-  const shoulder1 = useRef();
-  const revJoin2 = useRef();
+  // Create an array of refs
+  const refs = useRef(angles.map(() => React.createRef()));
 
   useFrame(() => {
-    const radA1 = angles.a1 * (Math.PI / 180);
-    const radA2 = angles.a2 * (Math.PI / 180);
-    if (shoulder1.current) {
-      console.log("Updating shoulder1 rotation");
-      shoulder1.current.rotation.z = radA1;
-    }
-    if (revJoin2.current) {
-      console.log("Updating revJoin2 rotation");
-      revJoin2.current.rotation.z = radA2;
-    }
+    refs.current.forEach((ref, index) => {
+      if (ref.current) {
+        ref.current.rotation.z = angles[index] * (Math.PI / 180);
+      }
+    });
   });
 
+  return <Chain angles={angles} refs={refs.current} index={0} />;
+}
+
+function Chain({ angles, refs, index }) {
+  if (index >= angles.length) return null; 
+  const position = index === 0 ? [0, 0, 0] : [0, 100 * (index), 0];
+  const hasLink = index <= angles.length - 1; // Link should exist if it's not the last joint
+
   return (
-    <group>
-      <RevolutJoint position={[0, 0, 0]} rotation={[0, 0, 0]}>
-        <group ref={shoulder1} position={[0, 15, 0]}>
-          <Link position={[0, 50, 0]} />
-          <group ref={revJoin2} position={[0, 100, 0]}>
-            <RevolutJoint position={[0, 0, 0]} rotation={[0, 0, 0]}>
-              <Link position={[0, 50, 0]} />
-            </RevolutJoint>
-          </group>
-        </group>
-      </RevolutJoint>
+    <group ref={refs[index]} position={position} rotation={[0, 0, angles[index] * (Math.PI / 180)]}>
+      <RevolutJoint position={[0, 0, 0]} rotation={[0, 0, 0]} />
+      {hasLink && <Link position={[0, 50, 0]} />}
+      <Chain angles={angles} refs={refs} index={index + 1} /> {/* Recursive call for the next segment */}
     </group>
   );
 }
@@ -73,18 +68,17 @@ function GridHelper() {
 }
 
 export default function RobotComponent() {
-  const [angles, setAngles] = useState({ a1: 0, a2: 0 });
-  // const shoulder1 = useRef();
+  const [angles, setAngles] = useState([0, 0]);  // Assuming two angles for simplification
 
-  const increaseAngle1 = () => setAngles((prev) => ({ ...prev, a1: Math.min(prev.a1 + 1, 90) }));
-  const decreaseAngle1 = () => setAngles((prev) => ({ ...prev, a1: Math.max(prev.a1 - 1, -90) }));
-  const increaseAngle2 = () => setAngles((prev) => ({ ...prev, a2: Math.min(prev.a2 + 1, 90) }));
-  const decreaseAngle2 = () => setAngles((prev) => ({ ...prev, a2: Math.max(prev.a2 - 1, -90) }));
+  const increaseAngle1 = () => setAngles((prev) => [Math.min(prev[0] + 1, 90), prev[1]]);
+  const decreaseAngle1 = () => setAngles((prev) => [Math.max(prev[0] - 1, -90), prev[1]]);
+  const increaseAngle2 = () => setAngles((prev) => [prev[0], Math.min(prev[1] + 1, 90)]);
+  const decreaseAngle2 = () => setAngles((prev) => [prev[0], Math.max(prev[1] - 1, -90)]);
 
   const saveAngles = () => {
     const filename = prompt('Enter the filename to save joint angles:', 'joint_angles.txt');
     if (filename) {
-      const fileContent = `Joint 1 Angle: ${angles.a1} degrees\nJoint 2 Angle: ${angles.a2} degrees`;
+      const fileContent = `Joint 1 Angle: ${angles[0]} degrees\nJoint 2 Angle: ${angles[1]} degrees`;
       const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
       saveAs(blob, filename);
     }
@@ -96,13 +90,13 @@ export default function RobotComponent() {
         <div>
           <label>Joint 1: </label>
           <button onClick={increaseAngle1}>+</button>
-          <input type="text" value={angles.a1} readOnly />
+          <input type="text" value={angles[0]} readOnly />
           <button onClick={decreaseAngle1}>-</button>
         </div>
         <div>
           <label>Joint 2: </label>
           <button onClick={increaseAngle2}>+</button>
-          <input type="text" value={angles.a2} readOnly />
+          <input type="text" value={angles[1]} readOnly />
           <button onClick={decreaseAngle2}>-</button>
         </div>
         <button onClick={saveAngles}>Save</button>
@@ -111,11 +105,6 @@ export default function RobotComponent() {
         <ambientLight intensity={0.4}/>
         <OrbitControls/>
         <GridHelper/>
-        {/* <RevolutJoint position={[0, 0, 0]} rotation={[0, 0, 0]} />
-        <group ref={shoulder1} position={[0, 15, 0]} />
-        <Link position={[0, 50, 0]} />
-        <RevolutJoint position={[0, 100, 0]} rotation={[0, 0, 0]} />
-        <Link position={[0, 150, 0]} /> */}
         <Manipulator angles={angles} />
       </Canvas>
     </>
