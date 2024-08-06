@@ -55,15 +55,6 @@ function Chain({ angles, refs, index }) {
   );
 }
 
-function SphereJoint({ position }) {
-  return (
-    <mesh position={position}>
-      <sphereGeometry args={[5, 32, 32]} />  
-      <meshBasicMaterial color={0x00ff00} /> 
-    </mesh>
-  );
-}
-
 function GridHelper() {
   const { scene } = useThree();
   useEffect(() => {
