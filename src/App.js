@@ -6,8 +6,6 @@ import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 function App() {
   const videoRef = useRef(null);
   const [stream, setStream] = useState(null);
-
-  // Toggle the camera stream
   const toggleCamera = () => {
     if (stream) {
       stopCamera();
@@ -15,8 +13,6 @@ function App() {
       startCamera();
     }
   };
-
-  // Start the camera stream
   const startCamera = () => {
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       const constraints = { video: true };
@@ -31,18 +27,14 @@ function App() {
         .catch((e) => console.error(e));
     }
   };
-
-  // Stop the camera stream
   const stopCamera = () => {
     if (stream) {
       stream.getTracks().forEach(track => track.stop());
-      setStream(null); // Clear the stream state
+      setStream(null); 
     }
   };
-
-  // Effect to cleanup on component unmount
   useEffect(() => {
-    return () => stopCamera(); // Stop camera when component unmounts
+    return () => stopCamera(); 
   }, [stream]);
 
   return (
