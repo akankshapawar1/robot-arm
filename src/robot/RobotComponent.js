@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
+import { Button, Typography, Box } from '@mui/material';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
@@ -96,29 +97,38 @@ export default function RobotComponent() {
   };
 
   return (
-    <>
-      <div id="control-panel">
-        <div>
-          <label>Joint 1: </label>
-          <button onClick={increaseAngle1}>+</button>
-          <input type="text" value={angles[0]} readOnly />
-          <button onClick={decreaseAngle1}>-</button>
-        </div>
-        <div>
-          <label>Joint 2: </label>
-          <button onClick={increaseAngle2}>+</button>
-          <input type="text" value={angles[1]} readOnly />
-          <button onClick={decreaseAngle2}>-</button>
-        </div>
-        <button onClick={saveAngles}>Save</button>
-      </div>
-      <Canvas camera={{position:[300,140,100],fov:75}}>
-      <directionalLight intensity={1} position={[100, 100, 100]} castShadow />
-        <ambientLight intensity={1}/>
-        <OrbitControls/>
-        <GridHelper/>
-        <Manipulator angles={angles}  colors={colors} />
+    <Box id="control-panel" sx={{
+      display: 'flex',
+      flexDirection: 'column',
+      padding: '1rem',
+      margin: 'auto',
+    }}>
+      <Canvas camera={{ position: [150, 50, 50], fov: 75 }} style={{ height: '65vh', border:'1px black solid'}}>
+        <directionalLight intensity={1} position={[100, 100, 100]} castShadow />
+        <ambientLight intensity={1} />
+        <OrbitControls />
+        <GridHelper />
+        <Manipulator angles={angles} colors={colors} />
       </Canvas>
-    </>
+      
+      <Box sx={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+          <Typography component="label" sx={{ marginRight: '0.5rem' }}>Joint 1:</Typography>
+          <Button onClick={increaseAngle1}>+</Button>
+          <input type="text" value={angles[0]} readOnly style={{ width: '50px', textAlign: 'center', margin: '0 0.5rem' }} />
+          <Button onClick={decreaseAngle1}>-</Button>
+        </Box>
+        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+          <Typography component="label" sx={{ marginRight: '0.5rem' }}>Joint 2:</Typography>
+          <Button onClick={increaseAngle2}>+</Button>
+          <input type="text" value={angles[1]} readOnly style={{ width: '50px', textAlign: 'center', margin: '0 0.5rem' }} />
+          <Button onClick={decreaseAngle2}>-</Button>
+        </Box>
+      </Box>
+
+      <Button variant="contained" color="primary" onClick={saveAngles} sx={{ marginBottom: '1rem' }} >
+        Save
+      </Button>
+    </Box>
   );
 }

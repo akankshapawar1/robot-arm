@@ -90,7 +90,7 @@ function App() {
             {stream ? 'Stop Camera' : 'Start Camera'}
           </Button>
         </Grid>
-        <Grid item xs={12} md={6} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Grid item xs={12} md={6}>
           <RobotComponent />
         </Grid>
       </Grid>
