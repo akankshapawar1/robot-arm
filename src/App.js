@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Button, Grid, Box } from '@mui/material';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
+import RobotComponent from './robot/RobotComponent.js';
 
 function App() {
   const videoRef = useRef(null);
@@ -76,12 +77,11 @@ function App() {
           </div>
         </Grid>
         {/* <Grid item xs={6} >
-          <Canvas style={{ height: '50rem', border: '1px black solid', justifyContent: 'center', marginTop: '5rem' }}>
-            <ambientLight intensity={5} />
-            <OrbitControls enableZoom={true} />
-            <Model />
-          </Canvas>
+          Robot component here
         </Grid> */}
+        <Grid item xs={6} style={{ height: '60rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <RobotComponent />
+        </Grid>
       </Grid>
     </div>
   );
