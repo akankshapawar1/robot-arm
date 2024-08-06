@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-import './App.css';
 import { Button, Grid, Box } from '@mui/material';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 
