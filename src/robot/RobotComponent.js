@@ -1,9 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Button, Typography, Box } from '@mui/material';
+import { Button, Typography, Box, FormControl, InputLabel, Select, MenuItem, IconButton } from '@mui/material';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
 import { saveAs } from 'file-saver'; 
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 function RevolutJoint({ position, rotation }) {
   return (
@@ -80,12 +82,13 @@ function GridHelper() {
 
 export default function RobotComponent() {
   const [angles, setAngles] = useState([0, 0]);  
+  const [increment, setIncrement] = useState(1); // State for increment unit
   const colors = ['#cc0000', '#fba54a'];
 
-  const increaseAngle1 = () => setAngles((prev) => [Math.min(prev[0] + 10, 90), prev[1]]);
-  const decreaseAngle1 = () => setAngles((prev) => [Math.max(prev[0] - 10, -90), prev[1]]);
-  const increaseAngle2 = () => setAngles((prev) => [prev[0], Math.min(prev[1] + 10, 90)]);
-  const decreaseAngle2 = () => setAngles((prev) => [prev[0], Math.max(prev[1] - 10, -90)]);
+  const increaseAngle1 = () => setAngles((prev) => [Math.min(prev[0] + increment, 90), prev[1]]);
+  const decreaseAngle1 = () => setAngles((prev) => [Math.max(prev[0] - increment, -90), prev[1]]);
+  const increaseAngle2 = () => setAngles((prev) => [prev[0], Math.min(prev[1] + increment, 90)]);
+  const decreaseAngle2 = () => setAngles((prev) => [prev[0], Math.max(prev[1] - increment, -90)]);
 
   const saveAngles = () => {
     const filename = prompt('Enter the filename to save joint angles:', 'joint_angles.txt');
@@ -94,6 +97,10 @@ export default function RobotComponent() {
       const blob = new Blob([fileContent], { type: 'text/plain;charset=utf-8' });
       saveAs(blob, filename);
     }
+  };
+
+  const resetAngles = () => {
+    setAngles([0, 0]);
   };
 
   return (
@@ -111,24 +118,45 @@ export default function RobotComponent() {
         <Manipulator angles={angles} colors={colors} />
       </Canvas>
       
-      <Box sx={{display:'flex', flexDirection:'row', justifyContent:'space-between'}}>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+      <Box sx={{display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography component="label" sx={{ marginRight: '0.5rem' }}>Joint 1:</Typography>
-          <Button onClick={increaseAngle1}>+</Button>
+          <IconButton onClick={increaseAngle1}><AddIcon/></IconButton>
           <input type="text" value={angles[0]} readOnly style={{ width: '50px', textAlign: 'center', margin: '0 0.5rem' }} />
-          <Button onClick={decreaseAngle1}>-</Button>
+          <IconButton onClick={decreaseAngle1}><RemoveIcon/></IconButton>
         </Box>
-        <Box sx={{ display: 'flex', alignItems: 'center', marginBottom: '1rem' }}>
+        <FormControl variant="outlined" sx={{ minWidth: 120, margin: '1rem' }}>
+          <InputLabel id="increment-label">Step Size</InputLabel> {/* Updated label */}
+          <Select
+            labelId="increment-label"
+            id="increment-select"
+            value={increment}
+            onChange={(e) => setIncrement(e.target.value)}
+            label="Step Size"
+            size='small'
+          >
+            <MenuItem value={1}>1</MenuItem>
+            <MenuItem value={5}>5</MenuItem>
+            <MenuItem value={10}>10</MenuItem>
+            <MenuItem value={20}>20</MenuItem>
+          </Select>
+        </FormControl>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Typography component="label" sx={{ marginRight: '0.5rem' }}>Joint 2:</Typography>
-          <Button onClick={increaseAngle2}>+</Button>
+          <IconButton onClick={increaseAngle2}><AddIcon/></IconButton>
           <input type="text" value={angles[1]} readOnly style={{ width: '50px', textAlign: 'center', margin: '0 0.5rem' }} />
-          <Button onClick={decreaseAngle2}>-</Button>
+          <IconButton onClick={decreaseAngle2}><RemoveIcon/></IconButton>
         </Box>
       </Box>
 
-      <Button variant="contained" color="primary" onClick={saveAngles} sx={{ marginBottom: '1rem' }} >
-        Save
-      </Button>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
+        <Button variant="contained" color="primary" onClick={saveAngles} sx={{ marginBottom: '1rem', width:'30%' }}>
+          Save
+        </Button>
+        <Button variant="contained" color="secondary" onClick={resetAngles} sx={{ marginBottom: '1rem', width:'30%' }}>
+          Reset
+        </Button>
+      </Box>
     </Box>
   );
 }
