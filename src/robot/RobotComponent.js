@@ -62,8 +62,8 @@ function Chain({ angles, refs, index, colors }) {
 
   return (
       <group ref={refs[index]} position={position} rotation={[0, 0, angles[index] * (Math.PI / 180)]}>
-          <Link dimensions={[10, boxHeight, 10]} color={color} position={[0, boxHeight / 2, 0]} />
-          <Chain angles={angles} refs={refs} index={index + 1} colors={colors} />
+        <Link dimensions={[10, boxHeight, 10]} color={color} position={[0, boxHeight / 2, 0]} />
+        <Chain angles={angles} refs={refs} index={index + 1} colors={colors} />
       </group>
   );
 }
@@ -110,7 +110,7 @@ export default function RobotComponent() {
       padding: '1rem',
       margin: 'auto',
     }}>
-      <Canvas camera={{ position: [150, 50, 50], fov: 75 }} style={{ height: '65vh', border:'1px black solid'}}>
+      <Canvas camera={{ position: [150, 50, 50], fov: 75 }} style={{ height: '65vh', border: '1px #999999 solid' }}>
         <directionalLight intensity={1} position={[100, 100, 100]} castShadow />
         <ambientLight intensity={1} />
         <OrbitControls />
@@ -120,13 +120,21 @@ export default function RobotComponent() {
       
       <Box sx={{display:'flex', flexDirection:'row', justifyContent:'space-between', alignItems: 'center', marginBottom: '1rem' }}>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography component="label" sx={{ marginRight: '0.5rem' }}>Joint 1:</Typography>
-          <IconButton onClick={increaseAngle1}><AddIcon/></IconButton>
-          <input type="text" value={angles[0]} readOnly style={{ width: '50px', textAlign: 'center', margin: '0 0.5rem' }} />
-          <IconButton onClick={decreaseAngle1}><RemoveIcon/></IconButton>
+          <Typography component="label" sx={{ color: 'lightgray', marginRight: '0.5rem' , fontSize:'1.2rem'}}>Joint 1:</Typography>
+          <IconButton onClick={decreaseAngle1} sx={{ color: 'white','&:hover': {
+                backgroundColor: 'gray',
+                color: 'white', 
+              }, }}><RemoveIcon/></IconButton>
+          <input type="text" value={angles[0]} readOnly style={{ textAlign: 'center', padding:'0.3rem', width:'50px', pointerEvents:'none' }} />
+          <IconButton onClick={increaseAngle1} sx={{ color: 'white','&:hover': {
+                backgroundColor: 'gray',
+                color: 'white', 
+              }, }}><AddIcon/></IconButton>
         </Box>
-        <FormControl variant="outlined" sx={{ minWidth: 120, margin: '1rem' }}>
-          <InputLabel id="increment-label">Step Size</InputLabel> {/* Updated label */}
+        <FormControl variant="outlined" sx={{ minWidth: 120, margin: '2rem' }}>
+        <InputLabel id="increment-label" sx={{ color: 'white', transform: 'translate(14px, -25px) scale(1)' }}>
+          Step Size
+        </InputLabel>
           <Select
             labelId="increment-label"
             id="increment-select"
@@ -134,6 +142,7 @@ export default function RobotComponent() {
             onChange={(e) => setIncrement(e.target.value)}
             label="Step Size"
             size='small'
+            sx={{ backgroundColor: 'white' }}
           >
             <MenuItem value={1}>1</MenuItem>
             <MenuItem value={5}>5</MenuItem>
@@ -142,10 +151,21 @@ export default function RobotComponent() {
           </Select>
         </FormControl>
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Typography component="label" sx={{ marginRight: '0.5rem' }}>Joint 2:</Typography>
-          <IconButton onClick={increaseAngle2}><AddIcon/></IconButton>
-          <input type="text" value={angles[1]} readOnly style={{ width: '50px', textAlign: 'center', margin: '0 0.5rem' }} />
-          <IconButton onClick={decreaseAngle2}><RemoveIcon/></IconButton>
+          <Typography component="label" sx={{ color: 'lightgray', marginRight: '0.5rem', fontSize:'1.2rem'}}>Joint 2:</Typography>
+          <IconButton onClick={decreaseAngle2} sx={{ color: 'white', '&:hover': {
+                backgroundColor: 'gray',
+                color: 'white', 
+              }, }}><RemoveIcon/></IconButton>
+          <input type="text" value={angles[1]} readOnly style={{ textAlign: 'center', padding:'0.3rem', width:'50px', pointerEvents:'none'}} />
+          <IconButton onClick={increaseAngle2} 
+            sx={{ color: 'white',
+              '&:hover': {
+                backgroundColor: 'gray',
+                color: 'white', 
+              },
+             }}>
+            <AddIcon/>
+          </IconButton>
         </Box>
       </Box>
 

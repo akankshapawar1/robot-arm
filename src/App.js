@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Button, Grid, Box } from '@mui/material';
 import VideocamOffIcon from '@mui/icons-material/VideocamOff';
 import RobotComponent from './robot/RobotComponent.js';
-import logo from './mowito_logo.jpeg';
+import logo from './mowito_logo.png';
 
 function App() {
   const videoRef = useRef(null);
@@ -43,9 +43,19 @@ function App() {
   }, [stream]);
 
   return (
-    <Box className="App" sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
+    <Box className="App" sx={{ display: 'flex', flexDirection: 'column', height: '100vh', backgroundColor:'#000000' }}>
       <Box sx={{ padding: '1rem', display: 'flex', justifyContent: 'flex-start', alignItems: 'center' }}>
-        <img src={logo} alt="logo" style={{ height: '6rem', width: 'auto' }} />
+      <img
+        src={logo}
+        alt="logo"
+        style={{
+          height: '6rem',
+          width: '6rem', // Set width equal to height for a perfect circle
+          border: '1px white solid',
+          borderRadius: '50%', // This makes the border circular
+          objectFit: 'cover', // Ensures the image covers the circular area without distortion
+        }}
+      />
       </Box>
       <Grid container sx={{ flexGrow: 1 }}>
         <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -67,7 +77,7 @@ function App() {
               style={{ 
                 maxWidth: '100%', 
                 maxHeight: '100%', 
-                border:'1px black solid'
+                border:'1px gray solid'
               }}
             />
             {!stream && (
