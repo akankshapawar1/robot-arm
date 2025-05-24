@@ -17,7 +17,7 @@ function RevolutJoint({ position, rotation }) {
 }
 
 function Link({ position, dimensions, color }) {
-  const [width, height, depth] = dimensions; 
+  const [width, height] = dimensions; 
   const cylinderPosition = [0, height / 2, 0]; 
 
   return (
