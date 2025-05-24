@@ -1,12 +1,12 @@
 {
   "files": {
-    "main.css": "/mowito-assessment/static/css/main.5119d324.css",
-    "main.js": "/mowito-assessment/static/js/main.d375bce8.js",
-    "static/js/206.3be98a8c.chunk.js": "/mowito-assessment/static/js/206.3be98a8c.chunk.js",
-    "index.html": "/mowito-assessment/index.html"
+    "main.css": "/robot-arm/static/css/main.5119d324.css",
+    "main.js": "/robot-arm/static/js/main.b66ebd27.js",
+    "static/js/206.3be98a8c.chunk.js": "/robot-arm/static/js/206.3be98a8c.chunk.js",
+    "index.html": "/robot-arm/index.html"
   },
   "entrypoints": [
     "static/css/main.5119d324.css",
-    "static/js/main.d375bce8.js"
+    "static/js/main.b66ebd27.js"
   ]
 }
