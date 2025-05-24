@@ -1,13 +1,12 @@
 {
   "files": {
     "main.css": "/mowito-assessment/static/css/main.5119d324.css",
-    "main.js": "/mowito-assessment/static/js/main.74e58a7e.js",
+    "main.js": "/mowito-assessment/static/js/main.d375bce8.js",
     "static/js/206.3be98a8c.chunk.js": "/mowito-assessment/static/js/206.3be98a8c.chunk.js",
-    "static/media/mowito_logo.png": "/mowito-assessment/static/media/mowito_logo.074cdda4ae4c30f17817.png",
     "index.html": "/mowito-assessment/index.html"
   },
   "entrypoints": [
     "static/css/main.5119d324.css",
-    "static/js/main.74e58a7e.js"
+    "static/js/main.d375bce8.js"
   ]
 }
